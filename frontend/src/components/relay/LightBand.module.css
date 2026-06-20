@@ -1,0 +1,42 @@
+.band {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.label {
+  flex: 0 0 auto;
+  width: 140px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.track {
+  flex: 1;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-inset);
+  overflow: hidden;
+  position: relative;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  border-radius: var(--radius-pill);
+}
+
+.fill[data-broken='true'] {
+  border: 1px dashed currentColor;
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 540px) {
+  .label {
+    width: 96px;
+  }
+}

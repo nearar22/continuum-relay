@@ -1,0 +1,211 @@
+// demoBatons.js
+// =============
+// The five seed batons, mirrored from the backend seed so the offline mock path
+// is identical to the live backend. The Grant Review demo is the canonical
+// receiver-misunderstanding case: its constraint forbids exposing private
+// reviewer notes, so a receiver who plans to publish them is blocked.
+
+export const DEMO_BATONS = [
+  {
+    id: 'baton-1',
+    seq: 1,
+    title: 'Grant Review Handoff',
+    sender: 'Delegate A',
+    senderAddr: '0x7A4c0b21D9e8845f3C9a1b2D4e5F6a7b8C9d0F21',
+    receiver: '',
+    receiverRole: 'Grant reviewer (Builder Track)',
+    status: 'draft',
+    repairCount: 0,
+    proofHash: '',
+    createdAt: '2026-06-19T09:12:00.000Z',
+    updatedAt: '2026-06-19T09:12:00.000Z',
+    layers: {
+      mission: 'Continue reviewing grant applications for the Builder Track.',
+      originalIntent:
+        'Score projects fairly while keeping private reviewer notes confidential.',
+      currentState:
+        'Five applications reviewed. Three remain. Public scoring categories are finalized.',
+      completedWork:
+        'Five of eight applications fully scored with public-facing rationales drafted.',
+      unresolvedRisks:
+        'Applicants may misunderstand low scores if the public explanations are too vague or terse.',
+      decisions:
+        'Scoring categories are locked: impact, feasibility, team, ecosystem fit.',
+      constraints:
+        'Do not expose private reviewer notes to applicants under any circumstances.',
+      nextAction:
+        'Review the remaining three applications and write public-facing explanations based on the aggregated criteria.',
+      definitionOfDone:
+        'All applications have public-facing explanations without revealing private reviewer notes.',
+      peopleWaiting:
+        'Three applicants awaiting decisions, plus the grants lead for the weekly report.',
+    },
+    events: [
+      { kind: 'created', detail: 'Grant Review Handoff', at: '2026-06-19T09:12:00.000Z' },
+    ],
+  },
+  {
+    id: 'baton-2',
+    seq: 2,
+    title: 'Incident Response Handoff',
+    sender: 'On-call EU',
+    senderAddr: '0x3b9aE21f7C45dD0a91b2c3D4e5F6071829aBcD34',
+    receiver: '',
+    receiverRole: 'On-call US (next timezone)',
+    status: 'draft',
+    repairCount: 0,
+    proofHash: '',
+    createdAt: '2026-06-19T16:40:00.000Z',
+    updatedAt: '2026-06-19T16:40:00.000Z',
+    layers: {
+      mission:
+        'Hand over an active degraded-RPC incident to the next timezone without losing the timeline.',
+      originalIntent:
+        'Restore full RPC availability while keeping a clean public status page narrative.',
+      currentState:
+        'Primary RPC node is degraded at roughly forty percent error rate. Failover to the secondary node is live but rate-limited.',
+      completedWork:
+        'Failover engaged, status page updated to partial outage, root-cause hypothesis narrowed to a bad cache layer.',
+      unresolvedRisks:
+        'The secondary node may saturate under peak US traffic, which would turn a partial outage into a full one.',
+      decisions:
+        'We will not roll back the cache deploy yet; we are gathering metrics for thirty more minutes first.',
+      constraints: 'Do not post raw internal error logs to the public status page.',
+      nextAction:
+        'Watch secondary-node saturation during US peak and decide on the cache rollback by 18:00 UTC.',
+      definitionOfDone:
+        'Error rate is back under two percent and the status page shows fully operational.',
+      peopleWaiting:
+        'Community channel and two integration partners are watching the status page.',
+    },
+    events: [
+      { kind: 'created', detail: 'Incident Response Handoff', at: '2026-06-19T16:40:00.000Z' },
+    ],
+  },
+  {
+    id: 'baton-3',
+    seq: 3,
+    title: 'Frontend Feature Handoff',
+    sender: 'Builder Mara',
+    senderAddr: '0x9F12aB34c5D6e7081920a3B4c5D6e7F8091a2B3C',
+    receiver: '',
+    receiverRole: 'Maintainer',
+    status: 'draft',
+    repairCount: 0,
+    proofHash: '',
+    createdAt: '2026-06-18T11:05:00.000Z',
+    updatedAt: '2026-06-18T11:05:00.000Z',
+    layers: {
+      mission: 'Finish the grant scoring interface so reviewers can publish decisions.',
+      originalIntent:
+        'Make reviewer decisions transparent to applicants without exposing private reviewer notes.',
+      currentState:
+        'Frontend layout is complete. Scoring aggregation logic is partially implemented and untested.',
+      completedWork: 'All layout components and the public score card are built and styled.',
+      unresolvedRisks:
+        "The aggregated bias display may be misread by applicants as an individual reviewer's opinion.",
+      decisions:
+        'Aggregation is the only thing applicants ever see; individual scores stay server-side.',
+      constraints: 'Do not expose raw private reviewer comments in any view.',
+      nextAction:
+        'Implement the aggregated score explanation component and test it against the demo dataset.',
+      definitionOfDone:
+        'Applicants can understand why a project was accepted, rejected, or asked to revise, with no private data leaked.',
+      peopleWaiting: 'The grants team wants this live before the next review round opens.',
+    },
+    events: [
+      { kind: 'created', detail: 'Frontend Feature Handoff', at: '2026-06-18T11:05:00.000Z' },
+    ],
+  },
+  {
+    id: 'baton-4',
+    seq: 4,
+    title: 'Governance Summary Handoff',
+    sender: 'Delegate C',
+    senderAddr: '0x2C7dE89f0a1B2c3D4e5F60718293aAbBcCdDeEf0',
+    receiver: '',
+    receiverRole: 'Incoming delegate',
+    status: 'draft',
+    repairCount: 0,
+    proofHash: '',
+    createdAt: '2026-06-17T14:20:00.000Z',
+    updatedAt: '2026-06-17T14:20:00.000Z',
+    layers: {
+      mission:
+        'Summarize the treasury-diversification discussion for the incoming delegate ahead of the vote.',
+      originalIntent:
+        'Preserve the nuance of the debate so the next delegate votes with full context, not just the headline.',
+      currentState:
+        'Discussion ran for two weeks across the forum and two calls. A draft proposal exists but is not finalized.',
+      completedWork: 'Captured the three competing positions and the main objection to each.',
+      unresolvedRisks:
+        'The most-liked forum post oversimplifies the stablecoin-allocation risk, which could skew the vote.',
+      decisions:
+        'Quorum threshold for this vote was agreed at the higher tier given the treasury impact.',
+      constraints: 'Do not present the summary as an endorsement of any single position.',
+      nextAction:
+        'Write a neutral one-page brief covering all three positions and the open question on stablecoin allocation.',
+      definitionOfDone:
+        'The incoming delegate can articulate all three positions and the key open risk before voting.',
+      peopleWaiting: 'The incoming delegate and the governance facilitator.',
+    },
+    events: [
+      { kind: 'created', detail: 'Governance Summary Handoff', at: '2026-06-17T14:20:00.000Z' },
+    ],
+  },
+  {
+    id: 'baton-5',
+    seq: 5,
+    title: 'Community Conflict Handoff',
+    sender: 'Mod Lin',
+    senderAddr: '0x5E0aB12c3D4e5F60718293aAbBcCdDeEf01234A5',
+    receiver: '',
+    receiverRole: 'Incoming moderator',
+    status: 'draft',
+    repairCount: 0,
+    proofHash: '',
+    createdAt: '2026-06-16T20:30:00.000Z',
+    updatedAt: '2026-06-16T20:30:00.000Z',
+    layers: {
+      mission:
+        'Hand over an ongoing dispute between two long-time contributors to the next moderator.',
+      originalIntent:
+        'De-escalate without taking sides and without exposing private DMs shared in confidence.',
+      currentState:
+        'Both contributors have agreed to a cool-off. One has asked for a public apology, which is contested.',
+      completedWork:
+        'Separated the two threads, issued a neutral reminder of the code of conduct, logged the timeline privately.',
+      unresolvedRisks:
+        'If the public-apology demand is mishandled, it could re-ignite the conflict and pull in observers.',
+      decisions:
+        'No public statement naming individuals will be made; resolution stays in the private mediation thread.',
+      constraints: 'Do not share the private DMs that were disclosed to you in confidence.',
+      nextAction:
+        'Hold a short private mediation call and propose a mutual statement rather than a one-sided apology.',
+      definitionOfDone:
+        'Both contributors return to collaboration and no private DMs were ever exposed.',
+      peopleWaiting: 'Both contributors and the community lead.',
+    },
+    events: [
+      { kind: 'created', detail: 'Community Conflict Handoff', at: '2026-06-16T20:30:00.000Z' },
+    ],
+  },
+];
+
+// The canonical misunderstanding mirror for the Grant Review demo: the receiver
+// plans to publish reviewer notes, which violates the protected constraint.
+export const DEMO_MISUNDERSTANDING_MIRROR = {
+  task: 'Finish reviewing the remaining grant applications and write up the decisions.',
+  nextAction: 'I will publish the reviewer notes so applicants can see the full reasoning.',
+  keyRisk: 'Applicants might be unhappy with low scores.',
+  constraint: 'Publish reviewer notes for full transparency.',
+  definitionOfDone: 'Every applicant can read the complete reviewer notes.',
+};
+
+export function cloneDemoBatons() {
+  return DEMO_BATONS.map((b) => ({
+    ...b,
+    layers: { ...b.layers },
+    events: b.events.map((e) => ({ ...e })),
+  }));
+}

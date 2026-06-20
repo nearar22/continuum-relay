@@ -1,0 +1,107 @@
+.map {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  padding: var(--space-sm) var(--space-lg);
+  background: color-mix(in srgb, var(--bg-base) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-top: var(--rule-thin) solid var(--border-hairline);
+}
+
+.lane {
+  position: absolute;
+  left: var(--space-lg);
+  right: var(--space-lg);
+  top: 50%;
+  height: 2px;
+  background: var(--border-hairline);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.laneFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--signal-teal), var(--relay-amber));
+  transition: width var(--dur-slow) var(--ease-out);
+}
+
+.stations {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stations::-webkit-scrollbar {
+  display: none;
+}
+
+.stationItem {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: 2px var(--space-2xs);
+  color: var(--text-dim);
+}
+
+.node {
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-base);
+  border: 2px solid var(--dim-steel);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.station[data-past='true'] .node {
+  border-color: var(--signal-teal);
+  background: var(--signal-teal);
+}
+
+.station[data-active='true'] .node {
+  border-color: var(--relay-amber);
+  background: var(--relay-amber);
+  box-shadow: 0 0 10px var(--relay-amber);
+}
+
+.stationLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.station:hover .stationLabel,
+.station[data-active='true'] .stationLabel {
+  color: var(--text-primary);
+}
+
+@media (max-width: 720px) {
+  .map {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .lane {
+    left: var(--space-sm);
+    right: var(--space-sm);
+  }
+  .stationLabel {
+    display: none;
+  }
+  .stations {
+    justify-content: space-around;
+    gap: var(--space-sm);
+  }
+}

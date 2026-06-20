@@ -1,0 +1,104 @@
+.runway {
+  width: 100%;
+  padding: var(--space-2xl) var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: var(--rule-thin) solid var(--border-hairline);
+  background: radial-gradient(600px 200px at 50% 50%, rgba(255, 184, 77, 0.05), transparent 70%),
+    var(--bg-base);
+}
+
+.corridor {
+  position: relative;
+  height: 60px;
+  margin: 0 var(--space-md);
+}
+
+.lane {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: translateY(-50%);
+  background: var(--border-hairline);
+  border-radius: var(--radius-pill);
+}
+
+.laneGlow {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: var(--radius-pill);
+  transition: width var(--dur-slow) var(--ease-out);
+  filter: blur(0.4px);
+}
+
+.checkpoint {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  z-index: 2;
+}
+
+.checkpointNode {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-base);
+  border: 2px solid var(--dim-steel);
+  transition: all var(--dur-mid) var(--ease-out);
+}
+
+.checkpoint[data-reached='true'] .checkpointNode {
+  border-color: var(--relay-amber);
+  background: var(--relay-amber);
+  box-shadow: 0 0 8px var(--relay-amber);
+}
+
+.checkpointLabel {
+  position: absolute;
+  top: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.checkpoint[data-reached='true'] .checkpointLabel {
+  color: var(--text-muted);
+}
+
+.travelBaton {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  transform-origin: -14px -14px;
+  margin: -2.5px;
+}
+
+@media (max-width: 540px) {
+  .checkpointLabel {
+    display: none;
+  }
+}

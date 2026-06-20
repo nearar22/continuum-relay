@@ -1,0 +1,12 @@
+.frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

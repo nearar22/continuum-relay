@@ -1,0 +1,69 @@
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md) var(--space-lg);
+  border: var(--rule-thin) solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  background: var(--bg-panel);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-2xl);
+  color: var(--text-bright);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+}
+
+.filterIcon {
+  color: var(--text-dim);
+  margin-right: var(--space-2xs);
+}
+
+.filterChip {
+  padding: 6px var(--space-md);
+  border-radius: var(--radius-pill);
+  border: var(--rule-thin) solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.filterChip:hover {
+  color: var(--text-bright);
+  border-color: var(--border-strong);
+}
+
+.filterChip[data-active='true'] {
+  color: var(--text-bright);
+  background: var(--amber-wash);
+  border-color: var(--border-accent);
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: var(--space-md);
+}

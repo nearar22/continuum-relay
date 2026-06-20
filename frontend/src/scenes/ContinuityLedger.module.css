@@ -1,0 +1,57 @@
+.headerActions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.filterIcon {
+  color: var(--text-dim);
+}
+
+.chip {
+  padding: 5px var(--space-md);
+  border-radius: var(--radius-pill);
+  border: var(--rule-thin) solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.chip:hover {
+  color: var(--text-bright);
+  border-color: var(--border-strong);
+}
+.chip[data-active='true'] {
+  color: var(--text-bright);
+  background: var(--amber-wash);
+  border-color: var(--border-accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+  gap: var(--space-md);
+}
+
+.dangerRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: var(--rule-thin) solid var(--border-hairline);
+}

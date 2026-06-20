@@ -1,0 +1,169 @@
+.gate {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: var(--rule-thin) solid var(--border-hairline);
+  background:
+    radial-gradient(520px 240px at 50% 50%, rgba(76, 125, 255, 0.08), transparent 70%),
+    linear-gradient(180deg, var(--bg-panel), var(--bg-base));
+  overflow: hidden;
+}
+
+.field {
+  position: relative;
+  height: 280px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* The horizontal rail the baton rides */
+.rail {
+  position: absolute;
+  top: 50%;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, transparent, var(--border-strong) 18%, var(--border-strong) 82%, transparent);
+}
+
+/* Sender / Receiver stations */
+.station {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  z-index: 4;
+}
+.station[data-side='left'] {
+  left: 7%;
+}
+.station[data-side='right'] {
+  right: 7%;
+}
+
+.node {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--signal-teal);
+  box-shadow: 0 0 18px var(--signal-teal);
+}
+.node[data-side='right'] {
+  background: var(--relay-amber);
+  box-shadow: 0 0 18px var(--relay-amber);
+}
+
+.stationLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The beam between the doors */
+.beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 56%;
+  height: 4px;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, transparent, var(--signal-teal), var(--relay-amber), transparent);
+  filter: blur(1px);
+  z-index: 1;
+}
+
+/* The two light doors */
+.door {
+  position: absolute;
+  top: 16%;
+  height: 68%;
+  width: 30%;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(76, 125, 255, 0.14), transparent 60%),
+    linear-gradient(180deg, var(--bg-raised), var(--bg-inset));
+  border: var(--rule-thin) solid var(--border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+.door[data-side='left'] {
+  left: 4%;
+  border-right: 2px solid var(--border-accent);
+}
+.door[data-side='right'] {
+  right: 4%;
+  border-left: 2px solid var(--border-accent);
+}
+
+.gate[data-band='blocked'] .door {
+  border-color: rgba(255, 77, 109, 0.55);
+}
+.gate[data-band='blocked'] .door[data-side='left'] {
+  border-right-color: var(--error);
+}
+.gate[data-band='blocked'] .door[data-side='right'] {
+  border-left-color: var(--error);
+}
+.gate[data-band='open'] .door {
+  border-color: rgba(46, 232, 198, 0.45);
+}
+
+/* The baton: a rotating orbit ring around a glowing core */
+.batonWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  z-index: 3;
+}
+
+.batonRing {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid transparent;
+  border-top-color: var(--signal-teal);
+  border-right-color: var(--relay-amber);
+}
+
+.batonCore {
+  width: 14px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, var(--relay-white), var(--relay-amber), var(--soft-infrared));
+  box-shadow: 0 0 22px var(--relay-amber);
+}
+
+.brokenBand {
+  position: absolute;
+  left: 32%;
+  right: 32%;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  border-top: 2px dashed var(--warning);
+  z-index: 4;
+}
+
+.spark {
+  position: absolute;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-pill);
+  background: var(--soft-infrared);
+  box-shadow: 0 0 12px var(--soft-infrared);
+  z-index: 5;
+}

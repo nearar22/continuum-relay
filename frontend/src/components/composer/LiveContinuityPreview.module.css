@@ -1,0 +1,82 @@
+.panel {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: var(--rule-thin) solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--bg-panel), var(--bg-base));
+}
+
+.core {
+  display: grid;
+  place-items: center;
+  padding: var(--space-md) 0 var(--space-lg);
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.missing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  color: var(--warning);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 209, 102, 0.1);
+}
+
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.issue {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--warning);
+  background: var(--bg-raised);
+}
+.issue[data-sev='High'] {
+  border-left-color: var(--error);
+}
+
+.issueType {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-bright);
+}
+
+.issueReason {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.issueOk {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  color: var(--success);
+}
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  line-height: 1.55;
+}

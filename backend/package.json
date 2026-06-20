@@ -1,0 +1,19 @@
+{
+  "name": "continuum-relay-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local backend for Continuum Relay: REST + WebSocket relay, local JSON storage, local continuity engine. No external APIs.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/relay.test.js"
+  },
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "4.21.0",
+    "genlayer-js": "^1.1.8",
+    "socket.io": "4.7.5"
+  }
+}

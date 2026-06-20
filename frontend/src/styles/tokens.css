@@ -1,0 +1,138 @@
+/* tokens.css
+   ==========
+   Continuum Relay design tokens. The palette is mandated exactly by the product
+   brief and is the single source of truth: every color in the app references a
+   named token here, never an inline hex. Art direction is the "Kinetic
+   Continuity Interface": a cinematic relay control room, dark by default. */
+
+:root {
+  /* Surfaces (dark, layered like a control room) */
+  --carbon-night: #050608;
+  --signal-black: #0a0d10;
+  --graphite-blue: #101820;
+  --deep-relay: #17212b;
+
+  /* Text */
+  --steel-mist: #e9eef2;
+  --relay-white: #f7fafc;
+
+  /* Accents */
+  --relay-amber: #ffb84d;
+  --signal-teal: #2ee8c6;
+  --voltage-blue: #4c7dff;
+  --soft-infrared: #ff6b5c;
+
+  /* Secondary / state */
+  --muted-steel: #8a96a3;
+  --dim-steel: #515c67;
+  --success: #55f0a6;
+  --warning: #ffd166;
+  --error: #ff4d6d;
+
+  /* Semantic surface roles */
+  --bg-base: var(--carbon-night);
+  --bg-panel: var(--signal-black);
+  --bg-raised: var(--graphite-blue);
+  --bg-inset: var(--deep-relay);
+  --border-hairline: rgba(138, 150, 163, 0.16);
+  --border-strong: rgba(138, 150, 163, 0.32);
+  --border-accent: rgba(255, 184, 77, 0.45);
+
+  /* Semantic text roles */
+  --text-primary: var(--steel-mist);
+  --text-bright: var(--relay-white);
+  --text-muted: var(--muted-steel);
+  --text-dim: var(--dim-steel);
+  --text-accent: var(--relay-amber);
+
+  /* Accent washes (for glows and fills) */
+  --amber-wash: rgba(255, 184, 77, 0.12);
+  --teal-wash: rgba(46, 232, 198, 0.12);
+  --voltage-wash: rgba(76, 125, 255, 0.12);
+  --infrared-wash: rgba(255, 107, 92, 0.12);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  /* Type scale */
+  --text-xs: 0.72rem;
+  --text-sm: 0.84rem;
+  --text-base: 0.95rem;
+  --text-md: 1.075rem;
+  --text-lg: 1.3rem;
+  --text-xl: 1.7rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: 3rem;
+  --text-display-s: 3.75rem;
+  --text-display: clamp(2.75rem, 6vw, 5.25rem);
+
+  /* Spacing (4pt scale) */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 20px;
+  --space-lg: 32px;
+  --space-xl: 52px;
+  --space-2xl: 84px;
+  --space-3xl: 128px;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Hairline rules */
+  --rule-thin: 1px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 140ms;
+  --dur-mid: 280ms;
+  --dur-slow: 520ms;
+
+  /* Elevation (soft, operational, never plastic) */
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.02) inset,
+    0 18px 48px rgba(0, 0, 0, 0.55);
+  --shadow-raised: 0 24px 70px rgba(0, 0, 0, 0.6);
+  --glow-amber: 0 0 0 1px rgba(255, 184, 77, 0.35),
+    0 0 32px rgba(255, 184, 77, 0.28);
+  --glow-teal: 0 0 0 1px rgba(46, 232, 198, 0.3),
+    0 0 28px rgba(46, 232, 198, 0.22);
+}
+
+/* Light mode: a daytime control room. Surfaces invert, accents hold. */
+:root[data-theme='light'] {
+  --bg-base: #eef2f6;
+  --bg-panel: #f7fafc;
+  --bg-raised: #ffffff;
+  --bg-inset: #e6ecf2;
+  --border-hairline: rgba(16, 24, 32, 0.12);
+  --border-strong: rgba(16, 24, 32, 0.22);
+  --border-accent: rgba(176, 104, 0, 0.4);
+
+  --text-primary: #18222c;
+  --text-bright: #050608;
+  --text-muted: #50606e;
+  --text-dim: #7a8794;
+  --text-accent: #9a6200;
+
+  --relay-amber: #b87400;
+  --signal-teal: #0c9c82;
+  --voltage-blue: #2f5be0;
+  --soft-infrared: #d6442f;
+
+  --amber-wash: rgba(184, 116, 0, 0.12);
+  --teal-wash: rgba(12, 156, 130, 0.12);
+  --voltage-wash: rgba(47, 91, 224, 0.12);
+  --infrared-wash: rgba(214, 68, 47, 0.12);
+
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 16px 40px rgba(16, 24, 32, 0.12);
+  --shadow-raised: 0 24px 60px rgba(16, 24, 32, 0.16);
+}
