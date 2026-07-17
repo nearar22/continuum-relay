@@ -22,7 +22,36 @@ export const addressUrl = (addr) => `${EXPLORER}/address/${addr}`;
 export const txUrl = (hash) => `${EXPLORER}/tx/${hash}`;
 
 export const readClient = createClient({ chain: testnetBradbury });
-export const makeWalletClient = (account) => createClient({ chain: testnetBradbury, account });
+
+// Browser writes must use the injected EIP-1193 provider. Passing only an
+// address gives the SDK no wallet transport and can fail before a signature
+// prompt appears.
+export function makeWalletClient(account, provider, clientFactory = createClient) {
+  if (!account) throw new Error('A connected wallet account is required.');
+  if (!provider || typeof provider.request !== 'function') {
+    throw new Error('No injected browser wallet provider is available.');
+  }
+  return clientFactory({ chain: testnetBradbury, account, provider });
+}
+
+// This is the single production seam for every browser-signed contract write.
+// It is exported so the repository test can prove the exact provider, sender,
+// and submitted contract address used by the UI without requiring test GEN.
+export async function submitWalletWrite({
+  account,
+  provider,
+  functionName,
+  args = [],
+  address = CONTRACT_ADDRESS,
+  clientFactory = createClient,
+}) {
+  const client = makeWalletClient(account, provider, clientFactory);
+  const hash = await client.writeContract({ address, functionName, args, value: 0n });
+  if (typeof hash !== 'string' || !hash.startsWith('0x')) {
+    throw new Error('Wallet write returned no transaction hash.');
+  }
+  return { client, hash };
+}
 
 // Reads can hit transient RPC errors; retry with exponential backoff.
 export async function withRpcRetry(fn, tries = 5) {

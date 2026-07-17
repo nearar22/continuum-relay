@@ -12,10 +12,37 @@ way: as a sealed baton with every layer the protocol requires. Read it in order
 and you have received the project, not just its summary. The continuity gate at
 the top is open because nothing essential has been left out.
 
+Live app:
+https://continuum-relay-8ny.pages.dev/
 Contract on the explorer:
 https://explorer-bradbury.genlayer.com/address/0x506a4b01D85A23BdF5817EEA6DB370a550DD4753
 Deployed by tx
 https://explorer-bradbury.genlayer.com/tx/0x39295612bbb8b02b98e0425b06bd4a46614f6fb07804ca4ed2f608842508fb6a
+
+## REVIEW FIXES (this resubmission)
+
+The reviewer asked for three things; all three are addressed:
+
+1. The injected browser-wallet provider is now wired into genlayer-js. Every
+   write builds its client with both the connected account and
+   `window.ethereum` (`submitWalletWrite` in `frontend/src/genlayer/chain.js`),
+   so MetaMask or Rabby signs `eth_sendTransaction` to the deployed contract.
+2. Failed writes are surfaced instead of continuing. `runWrite` fails closed on
+   wallet rejection, a missing transaction hash, timeout, cancellation,
+   undetermined consensus, or a non-successful execution result
+   (`assertSuccessfulTransaction` in `frontend/src/genlayer/tx.js`). The UI only
+   reports success and shows the explorer link after a verified transaction.
+3. A repository test proves a wallet-signed write reaches the submitted
+   contract: `frontend/tests/wallet-write.test.mjs`, run with
+   `cd frontend && npm test`.
+
+Live proof, a `create_baton` write signed in MetaMask on the deployed site and
+accepted on-chain (From is the browser wallet, To is the submitted contract):
+
+> ACCEPTED, CONTRACT_CALL
+> From `0xc8Cec80b192750dfe41274a0f43fE1AA7ca75Ea` (browser wallet)
+> To   `0x506a4b01D85A23BdF5817EEA6DB370a550DD4753` (Continuum Relay contract)
+> https://explorer-bradbury.genlayer.com/tx/0xbf0f81dd1af17ee33b50675c5d3a83ba710c7f85c47aae380766e550078b0dae
 
 ---
 
@@ -39,20 +66,26 @@ GenLayer and not on a single server with an API key.
 
 ## CURRENT STATE
 
-Live and real. The Intelligent Contract is deployed to GenLayer Bradbury
-(chain 4221) and every action in the app is a real transaction against it. The
-full two-party lifecycle has been exercised on-chain end to end: a baton with a
-buried contradiction was read and Blocked, and a clean baton was Opened by the
-gate, mirrored correctly by a second wallet, accepted, and sealed with a
-continuity proof. There is no mock and no local judgment engine anymore; the
-frontend reads contract views directly and writes through the user's own wallet.
+Live on GenLayer Bradbury (chain 4221). Contract views are the frontend's source
+of truth. Every state-changing UI action (`create_baton`,
+`evaluate_baton_completeness`, `submit_receiver_mirror`, `request_repair`, and
+`accept_baton`) is submitted through `genlayer-js` with the connected address
+and the injected `window.ethereum` provider, so MetaMask or Rabby signs it.
+The runway's "pass" animation is explicitly UI-only; it does not claim a state
+transition. Local scoring is used only for an untrusted composition preview;
+the stored gate and mirror judgments always come from validator consensus.
+
+The full two-party lifecycle has also been exercised on-chain: a contradictory
+baton was Blocked, while a clean baton was Opened, mirrored by a second wallet,
+accepted, and sealed with a continuity proof.
 
 ## COMPLETED WORK
 
 ```
 genlayer/continuum_relay_contract.py   gate + mirror + repair, lints clean
-frontend (React + Vite + genlayer-js)  reads chain views, signs with the wallet
-the continuity gate                    create_baton, evaluate_baton_completeness
+frontend (React + Vite + genlayer-js)  reads views; injected wallet signs writes
+the browser write boundary              fails on reject, missing hash, timeout, or execution error
+the continuity gate                     create_baton, evaluate_baton_completeness
 the receiver mirror                    submit_receiver_mirror, a second signer
 acceptance + proof                     accept_baton mints a continuity proof
 scripts/                               deploy, fund a receiver, verify full flow
@@ -70,11 +103,14 @@ get_proof(id)      the sealed continuity proof for an accepted baton
 ## UNRESOLVED RISKS
 
 The receiver MUST be a different wallet than the sender; the contract refuses a
-same-address handoff, so a real two-party demo needs two funded keys. AI writes
-run under validator consensus and take minutes, and the SDK can raise on the
-receipt while the transaction is still live, so success is confirmed by re-reading
-the baton, never by the wallet's return. Bradbury RPC rate-limits bursts; reads
-retry with backoff.
+same-address handoff, so a real two-party demo needs two funded wallets. AI
+writes run under validator consensus and can take minutes. The UI now fails
+closed: wallet rejection, missing transaction hash, timeout, cancellation,
+undetermined consensus, or a non-successful contract execution all stop the
+flow and surface an error. Success UI is emitted only after the submitted hash
+reaches ACCEPTED/FINALIZED with `FINISHED_WITH_RETURN` or
+`FINISHED_WITHOUT_RETURN`. Bradbury RPC rate-limits bursts; reads retry with
+backoff.
 
 ## DECISIONS
 
@@ -102,17 +138,25 @@ cd frontend
 npm install
 npm run dev            # open the app, browse real batons from the chain
 
-# 2. to write (compose, gate, mirror, accept) connect a wallet on Bradbury
-#    and claim test GEN from the faucet first
+# 2. prove the production browser-write seam is wired correctly
+npm test              # provider + wallet address + submitted contract; failure propagation
 
-# 3. redeploy your own instance, or re-verify the full lifecycle
+# 3. to write (compose, gate, mirror, repair, accept), connect MetaMask or
+#    Rabby on Bradbury and claim test GEN from the faucet first
+
+# 4. redeploy your own instance, or re-verify the full lifecycle
 cd ../scripts
 python deploy.py            # deploy the contract, writes deployment.json
 python verify_full.py       # create, gate-open, mirror, accept, prove on-chain
 ```
 
-The contract tests cover a complete handoff, missing context, a contradictory
-summary, a receiver misunderstanding, a fake completion, and a full repair loop:
+The repository has two test layers. `frontend/tests/wallet-write.test.mjs`
+exercises the same exported submission function used by the UI and asserts that
+`genlayer-js` receives the injected EIP-1193 provider and connected account,
+that `writeContract` targets the address in `deployment.json`, and that wallet
+rejection or a missing provider propagates instead of producing success. The
+contract tests cover a complete handoff, missing context, a contradictory
+summary, a receiver misunderstanding, a fake completion, and a repair loop:
 
 ```
 cd genlayer && python tests/runner.py
@@ -121,12 +165,12 @@ cd genlayer && python tests/runner.py
 ## DEFINITION OF DONE (how you know this baton was received)
 
 You can state, without re-reading: that GenLayer is load-bearing here because the
-continuity-of-meaning judgment IS the on-chain settlement; that a handoff moves
-only through Draft, AtGate, ReceiverClarification, Accepted, with a repair loop
-when meaning is incomplete; that the receiver is a different person who must mirror
-their understanding before they can accept; and that you can prove any of it
-against the contract at the address in the gate header above. If so, the thread
-held. The baton is yours.
+continuity-of-meaning judgment IS the on-chain settlement; that each browser
+write is signed through the injected wallet and cannot advance the UI without a
+verified successful transaction; that the receiver is a different person who
+must mirror their understanding before acceptance; and that the deployed state
+is verifiable against the contract in the gate header. If so, the thread held.
+The baton is yours.
 
 ## PEOPLE WAITING
 

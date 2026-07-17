@@ -17,13 +17,13 @@ import {
 } from 'react';
 import {
   CONTRACT_ADDRESS,
-  makeWalletClient,
+  submitWalletWrite,
   fetchBatons,
   fetchBaton,
   fetchStats,
   fetchProof,
 } from '../genlayer/chain.js';
-import { pollUntilDecided } from '../genlayer/tx.js';
+import { pollUntilDecided, assertSuccessfulTransaction } from '../genlayer/tx.js';
 import { useWallet } from '../hooks/useWallet.js';
 
 const RelayContext = createContext(null);
@@ -52,6 +52,7 @@ export function RelayProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const [pulses, setPulses] = useState([]);
   const [txStatus, setTxStatus] = useState(null); // live status name while a write is in flight
+  const [lastTx, setLastTx] = useState(null); // hash of the most recent confirmed write, for evidence
 
   const mounted = useRef(true);
   const paused = useRef(false);
@@ -112,36 +113,47 @@ export function RelayProvider({ children }) {
   const resumePoll = useCallback(() => { paused.current = false; }, []);
 
   // ---- shared write runner -------------------------------------------------
-  // Submits a write through the connected wallet, surfaces the live on-chain
-  // status, and confirms by re-reading the baton once the tx is decided.
+  // Submits through the injected browser wallet and fails closed. No pulse,
+  // refresh, success toast, or navigation can happen without a real hash and a
+  // successful terminal contract execution result.
   const runWrite = useCallback(
     async (functionName, args, { pulseEvent } = {}) => {
-      if (!wallet.address) {
-        await wallet.connect();
-        throw new Error('Connect your wallet to sign this transaction.');
+      let account = wallet.address;
+      let provider = wallet.provider;
+      if (!account) {
+        const connected = await wallet.connect();
+        account = connected?.address;
+        provider = connected?.provider;
       }
+      if (!account || !provider) throw new Error('Connect your browser wallet to sign this transaction.');
+      if (!wallet.onRightChain) await wallet.switchChain();
+
       pausePoll();
       setTxStatus('PENDING');
-      const client = makeWalletClient(wallet.address);
-      let hash = null;
       try {
-        hash = await client.writeContract({ address: CONTRACT_ADDRESS, functionName, args, value: 0n });
-      } catch (e) {
-        if (/user rejected|denied|LackOfFundForMaxFee|insufficient/i.test(String(e))) {
-          setTxStatus(null);
-          resumePoll();
-          throw new Error(friendlyError(e));
-        }
-        // Non-fatal: the tx may still be live; fall through to status polling.
+        const { client, hash } = await submitWalletWrite({
+          account,
+          provider,
+          functionName,
+          args,
+        });
+        const decision = await pollUntilDecided(
+          client,
+          hash,
+          (status) => setTxStatus(status),
+          { tries: 90, intervalMs: 6000 },
+        );
+        assertSuccessfulTransaction(decision);
+        setLastTx({ hash, functionName });
+        await refresh(true);
+        if (pulseEvent) pulse(pulseEvent, { hash });
+        return { hash, receipt: decision.tx };
+      } catch (error) {
+        throw new Error(friendlyError(error));
+      } finally {
+        setTxStatus(null);
+        resumePoll();
       }
-      if (hash) {
-        await pollUntilDecided(client, hash, (s) => setTxStatus(s), { tries: 90, intervalMs: 6000 });
-      }
-      setTxStatus(null);
-      resumePoll();
-      if (pulseEvent) pulse(pulseEvent, {});
-      await refresh(true);
-      return { hash };
     },
     [wallet, pausePoll, resumePoll, pulse, refresh],
   );
@@ -225,6 +237,7 @@ export function RelayProvider({ children }) {
       loadError,
       lastUpdated,
       txStatus,
+      lastTx,
       wallet,
       contractAddress: CONTRACT_ADDRESS,
       pulses,
@@ -242,7 +255,7 @@ export function RelayProvider({ children }) {
       acceptBaton,
     }),
     [
-      batons, stats, loading, loadError, lastUpdated, txStatus, wallet, pulses, toasts,
+      batons, stats, loading, loadError, lastUpdated, txStatus, lastTx, wallet, pulses, toasts,
       pushToast, dismissToast, refresh, getBaton, getProof, createBaton, evaluateBaton,
       submitMirror, repairBaton, passBaton, acceptBaton,
     ],

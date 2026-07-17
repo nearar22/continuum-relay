@@ -6,11 +6,11 @@
 
 import { RadioTower, Loader, WifiOff } from 'lucide-react';
 import { useRelay } from '../../context/RelayContext.jsx';
-import { NETWORK_NAME } from '../../genlayer/chain.js';
+import { NETWORK_NAME, txUrl } from '../../genlayer/chain.js';
 import styles from './WebSocketStatusBadge.module.css';
 
 export function ChainStatusBadge({ compact = false }) {
-  const { loadError, txStatus, lastUpdated } = useRelay();
+  const { loadError, txStatus, lastUpdated, lastTx } = useRelay();
   const writing = !!txStatus;
   const ok = !loadError && (lastUpdated || writing);
 
@@ -31,7 +31,19 @@ export function ChainStatusBadge({ compact = false }) {
       {!compact ? (
         <span className={styles.text}>
           {label}
-          <span className={styles.mode}>GenLayer</span>
+          {!writing && lastTx?.hash ? (
+            <a
+              className={styles.mode}
+              href={txUrl(lastTx.hash)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`Last wallet-signed write: ${lastTx.functionName}`}
+            >
+              last tx on explorer
+            </a>
+          ) : (
+            <span className={styles.mode}>GenLayer</span>
+          )}
         </span>
       ) : null}
     </span>

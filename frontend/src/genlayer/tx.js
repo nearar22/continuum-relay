@@ -31,14 +31,39 @@ const TERMINAL = new Set(['ACCEPTED', 'FINALIZED', 'UNDETERMINED', 'CANCELED']);
 
 export const isTerminal = (name) => TERMINAL.has(name);
 
+const SUCCESSFUL_EXECUTION = new Set(['FINISHED_WITH_RETURN', 'FINISHED_WITHOUT_RETURN']);
+
+export function assertSuccessfulTransaction(decision) {
+  const status = statusName(decision?.status);
+  if (status === 'TIMEOUT') throw new Error('Transaction confirmation timed out.');
+  if (status === 'CANCELED') throw new Error('Transaction was canceled.');
+  if (status === 'UNDETERMINED') throw new Error('Validator consensus was undetermined.');
+  if (status !== 'ACCEPTED' && status !== 'FINALIZED') {
+    throw new Error(`Transaction stopped in unexpected status ${status}.`);
+  }
+
+  const tx = decision?.tx;
+  const execution = String(
+    tx?.txExecutionResultName ?? tx?.tx_execution_result_name ?? '',
+  ).toUpperCase();
+  if (!SUCCESSFUL_EXECUTION.has(execution)) {
+    throw new Error(
+      execution
+        ? `Contract execution failed with ${execution}.`
+        : 'Contract execution result could not be verified.',
+    );
+  }
+  return tx;
+}
+
 export async function pollUntilDecided(client, hash, onUpdate, opts = {}) {
   const { tries = 200, intervalMs = 8000 } = opts;
   for (let i = 0; i < tries; i += 1) {
     const tx = await client.getTransaction({ hash }).catch(() => null);
-    const status = statusName(tx ? tx.status : 'PENDING');
+    const status = statusName(tx ? (tx.statusName ?? tx.status) : 'PENDING');
     onUpdate?.(status);
     if (TERMINAL.has(status)) return { status, tx };
     await new Promise((r) => setTimeout(r, intervalMs));
   }
-  return { status: 'TIMEOUT' };
+  return { status: 'TIMEOUT', tx: null };
 }
